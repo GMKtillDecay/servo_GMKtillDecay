@@ -36,6 +36,7 @@ CSG servoFactory(
 			.noCenter()
 			.toCSG()
 			.movey(shaftToShortSideFlandgeEdge-flangeLongDimention)
+			.movex(servoThinDimentionThickness/2)
          return shaft.union(flange)
 }
 
