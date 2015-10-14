@@ -35,7 +35,7 @@ CSG servoFactory(
 			)
 			.noCenter()
 			.toCSG()
-			
+			.movey(shaftToShortSideFlandgeEdge-flangeLongDimention)
          return shaft.union(flange)
 }
 
