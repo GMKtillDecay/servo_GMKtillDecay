@@ -8,4 +8,9 @@ CSG srv = Vitamins.get("smallservo.stl")
 srv.setColor(Color.GREEN)
 allCad.add(srv)
 
+srv = Vitamins.get("smallservo.stl")
+          .movey(-20)
+srv.setColor(Color.GREEN)
+allCad.add(srv)
+
 return allCad
