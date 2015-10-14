@@ -32,8 +32,10 @@ CSG servoFactory(
 	CSG flange = new Cube(	servoThinDimentionThickness,// X dimention
 			flangeLongDimention,// Y dimention
 			flangeThickness//  Z dimention
-			).toCSG()
+			)
 			.noCenter()
+			.toCSG()
+			
          return shaft.unionAll(flange)
 }
 
