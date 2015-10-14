@@ -57,7 +57,7 @@ return servoFactory(11.7,//servoThinDimentionThickness
                         5.13, //shaftToShortSideDistance
                        11.0,// shaftToShortSideFlandgeEdge
                         12.9, // tipOfShaftToBottomOfFlange
-                        2.0 ,//flangeThickness
+                        3.0 ,//flangeThickness
                         33.3,// flangeLongDimention
                         10.16//bottomOfFlangeToTopOfBody
                         
