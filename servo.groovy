@@ -36,7 +36,7 @@ CSG servoFactory(
 			.noCenter()
 			.toCSG()
 			
-         return shaft.unionAll(flange)
+         return shaft.union(flange)
 }
 
 allCad.add(servoFactory(11.7,//servoThinDimentionThickness
