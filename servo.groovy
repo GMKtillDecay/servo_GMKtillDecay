@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 ArrayList<CSG> allCad=new ArrayList<>()
 
 CSG srv = Vitamins.get("smallservo.stl")
+          .movex(20)
 srv.setColor(Color.GREEN)
 allCad.add(srv)
 
