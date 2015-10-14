@@ -9,7 +9,7 @@ srv.setColor(Color.GREEN)
 allCad.add(srv)
 
 srv = Vitamins.get("smallservo.stl")
-          .movey(-20)
+          .movey(-40)
 srv.setColor(Color.GREEN)
 allCad.add(srv)
 
