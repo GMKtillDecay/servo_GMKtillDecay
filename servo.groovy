@@ -39,13 +39,13 @@ CSG servoFactory(
 	    		.movey(shaftToShortSideDistance-servoThickDimentionThickness)
 	    	CSG cord = new Cube(
 			9,// x dimention	
-			3,// y dimention
+			6,// y dimention
 			200//  Z dimention
 			)
 			.noCenter()
 			.toCSG()
 			.rotz(-90)
-			.movex(1.5)
+			.movex(3)
 			
 			.movey(shaftToShortSideDistance-3)
 			.movez(-200)
