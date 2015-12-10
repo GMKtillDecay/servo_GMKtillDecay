@@ -44,9 +44,12 @@ CSG servoFactory(
 			)
 			.noCenter()
 			.toCSG()
-			.movex(-4.5)
+			.rotz(-90)
+			.movex(1.5)
+			
 			.movey(shaftToShortSideDistance-3)
 			.movez(-200)
+			
           return shaft.union(flange,body,cord)
 }
 if(args==null)// Deafult to the standard micro servo
