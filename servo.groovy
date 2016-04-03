@@ -1,5 +1,18 @@
 import com.neuronrobotics.bowlerstudio.vitamins.Vitamins;
 import javafx.scene.paint.Color;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 CSG servoFactory(   
 		double servoThinDimentionThickness,
@@ -52,6 +65,7 @@ CSG servoFactory(
 			
           return shaft.union(flange,body,cord)
 }
+/*
 if(args==null)// Deafult to the standard micro servo
 	return servoFactory(11.7,//servoThinDimentionThickness
 			23.6,// servoThickDimentionThickness
@@ -64,6 +78,51 @@ if(args==null)// Deafult to the standard micro servo
                         32.3,// flangeLongDimention
                         10.16//bottomOfFlangeToTopOfBody
           )
+ */
+if(args==null)
+	args=["standardMicro"]
+if(args.size()==1 ){
+	// we are using the default vitamins configuration
+	//https://github.com/madhephaestus/Hardware-Dimensions.git
+	//Create the type, this tells GSON what datatypes to instantiate when parsing and saving the json
+	Type TT_mapStringString = new TypeToken<HashMap<String,HashMap<String,Object>>>(){}.getType();
+	//chreat the gson object, this is the parsing factory
+	Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
+	// create some variables, including our database
+	HashMap<String,HashMap<String,Object>> database=new HashMap<String,HashMap<String,Object>>();
+	String jsonString;
+	InputStream inPut = null;
+
+	// attempt to load the JSON file from the GIt Repo and pars the JSON string
+	File f=ScriptingEngine
+							.fileFromGit(
+								"https://github.com/madhephaestus/Hardware-Dimensions.git",// git repo, change this if you fork this demo
+								"json/hobbyServo.json"// File from within the Git repo
+							)
+	//println "Loading file "+f	+" "+f.exists()					
+	inPut = FileUtils.openInputStream(f);
+				
+	jsonString= IOUtils.toString(inPut);
+	//println "Contains: "+jsonString
+	// perfoem the GSON parse
+	database=gson.fromJson(jsonString, TT_mapStringString);
+
+	//println "Database loaded "+database
+	HashMap<String,Object> servoConfig = database.get(args.get(0))
+
+	return servoFactory(Double.parseDouble(servoConfig.get("servoThinDimentionThickness").toString()),//servoThinDimentionThickness
+			Double.parseDouble(servoConfig.get("servoThickDimentionThickness").toString()),// servoThickDimentionThickness
+			Double.parseDouble(servoConfig.get("servoShaftSideHeight").toString()), // servoShaftSideHeight
+			Double.parseDouble(servoConfig.get("outputShaftDiameter").toString()),// outputShaftDiameter
+               Double.parseDouble(servoConfig.get("shaftToShortSideDistance").toString()), //shaftToShortSideDistance
+               Double.parseDouble(servoConfig.get("shaftToShortSideFlandgeEdge").toString()),// shaftToShortSideFlandgeEdge
+               Double.parseDouble(servoConfig.get("tipOfShaftToBottomOfFlange").toString()), // tipOfShaftToBottomOfFlange
+               Double.parseDouble(servoConfig.get("flangeThickness").toString()),//flangeThickness
+               Double.parseDouble(servoConfig.get("flangeLongDimention").toString()),// flangeLongDimention
+               Double.parseDouble(servoConfig.get("bottomOfFlangeToTopOfBody").toString())//bottomOfFlangeToTopOfBody
+                        )
+	
+}
 if(args.size()!=10)
 	throw new RuntimeException("Arguments are : \n"+		
 		"double servoThinDimentionThickness,\n"+
