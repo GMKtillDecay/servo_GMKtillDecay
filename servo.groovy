@@ -26,7 +26,7 @@ CSG servoFactory(
 		double flangeLongDimention,
 		double bottomOfFlangeToTopOfBody
 		){
-		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",50,[500,0.01])
+		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",30,[500,0.01])
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
 				outputShaftDimeter/2, // Radius at the bottom
 				tipOfShaftToBottomOfFlange, // Height
@@ -65,6 +65,7 @@ CSG servoFactory(
 			.movez(-tailLength.getMM())
 			
           return shaft.union(flange,body,cord)
+          	.setParameter(tailLength)
 }
 /*
 if(args==null)// Deafult to the standard micro servo
