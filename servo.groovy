@@ -13,7 +13,7 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
+import eu.mihosoft.vrl.v3d.parametrics.*;
 CSG servoFactory(   
 		double servoThinDimentionThickness,
 		double servoThickDimentionThickness,
@@ -26,6 +26,7 @@ CSG servoFactory(
 		double flangeLongDimention,
 		double bottomOfFlangeToTopOfBody
 		){
+		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",50,[500,0.01])
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
 				outputShaftDimeter/2, // Radius at the bottom
 				tipOfShaftToBottomOfFlange, // Height
@@ -53,7 +54,7 @@ CSG servoFactory(
 	    	CSG cord = new Cube(
 			9,// x dimention	
 			6,// y dimention
-			200//  Z dimention
+			tailLength.getMM()//  Z dimention
 			)
 			.noCenter()
 			.toCSG()
@@ -61,7 +62,7 @@ CSG servoFactory(
 			.movex(3)
 			
 			.movey(shaftToShortSideDistance-3)
-			.movez(-200)
+			.movez(-tailLength.getMM())
 			
           return shaft.union(flange,body,cord)
 }
@@ -79,36 +80,14 @@ if(args==null)// Deafult to the standard micro servo
                         10.16//bottomOfFlangeToTopOfBody
           )
  */
-if(args==null)
-	args=["standardMicro"]
-if(args.size()==1 ){
-	// we are using the default vitamins configuration
-	//https://github.com/madhephaestus/Hardware-Dimensions.git
-	//Create the type, this tells GSON what datatypes to instantiate when parsing and saving the json
-	Type TT_mapStringString = new TypeToken<HashMap<String,HashMap<String,Object>>>(){}.getType();
-	//chreat the gson object, this is the parsing factory
-	Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-	// create some variables, including our database
-	HashMap<String,HashMap<String,Object>> database=new HashMap<String,HashMap<String,Object>>();
-	String jsonString;
-	InputStream inPut = null;
 
-	// attempt to load the JSON file from the GIt Repo and pars the JSON string
-	File f=ScriptingEngine
-							.fileFromGit(
-								"https://github.com/madhephaestus/Hardware-Dimensions.git",// git repo, change this if you fork this demo
-								"json/hobbyServo.json"// File from within the Git repo
-							)
-	//println "Loading file "+f	+" "+f.exists()					
-	inPut = FileUtils.openInputStream(f);
-				
-	jsonString= IOUtils.toString(inPut);
-	//println "Contains: "+jsonString
-	// perfoem the GSON parse
-	database=gson.fromJson(jsonString, TT_mapStringString);
-
+CSG getNut(){
+	String type= "hobbyServo"
+	StringParameter size = new StringParameter(	type+" Default",
+										args.get(0),
+										Vitamins.listVitaminSizes(type))
 	//println "Database loaded "+database
-	HashMap<String,Object> servoConfig = database.get(args.get(0))
+	HashMap<String,Object> servoConfig = Vitamins.getConfiguration( type,size.getStrValue())
 
 	return servoFactory(Double.parseDouble(servoConfig.get("servoThinDimentionThickness").toString()),//servoThinDimentionThickness
 			Double.parseDouble(servoConfig.get("servoThickDimentionThickness").toString()),// servoThickDimentionThickness
@@ -121,6 +100,15 @@ if(args.size()==1 ){
                Double.parseDouble(servoConfig.get("flangeLongDimention").toString()),// flangeLongDimention
                Double.parseDouble(servoConfig.get("bottomOfFlangeToTopOfBody").toString())//bottomOfFlangeToTopOfBody
                         )
+		.setParameter(size)
+		.setRegenerate({getNut()})
+}
+
+if(args==null)
+	args=["standardMicro"]
+if(args.size()==1 ){
+
+    return getNut()                  
 	
 }
 if(args.size()!=10)
