@@ -40,6 +40,16 @@ CSG servoFactory(
 			.noCenter()
 			.toCSG()
 			.movey(shaftToShortSideFlandgeEdge-flangeLongDimention)
+			
+		CSG flangeBrace = new Cube(	flangeThickness,// X dimention
+			flangeLongDimention,// Y dimention
+			flangeThickness*2//  Z dimention
+			).toCSG()
+			.toYMax()
+			.movey(flange.getMaxY())
+			.movex(servoThinDimentionThickness/2)
+			.movez(flangeThickness)
+		flange=flange.union(flangeBrace)
 			.movex(-servoThinDimentionThickness/2)
 		CSG body = new Cube(	
 			servoThinDimentionThickness,// X dimention
