@@ -27,7 +27,7 @@ CSG servoFactory(
 		double bottomOfFlangeToTopOfBody,
 		HashMap<String,Object> servoConfig
 		){
-		
+		shaftToShortSideDistance= servoThinDimentionThickness/2
 		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",30,[500,0.01])
 		
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
@@ -133,7 +133,7 @@ CSG getNut(){
 	//println "Database loaded "+database
 	HashMap<String,Object> servoConfig = Vitamins.getConfiguration( type,size.getStrValue())
 
-	println "Loading " +size.getStrValue()
+	//println "Loading " +size.getStrValue()
 	return servoFactory(Double.parseDouble(servoConfig.get("servoThinDimentionThickness").toString()),//servoThinDimentionThickness
 			Double.parseDouble(servoConfig.get("servoThickDimentionThickness").toString()),// servoThickDimentionThickness
 			Double.parseDouble(servoConfig.get("servoShaftSideHeight").toString()), // servoShaftSideHeight
