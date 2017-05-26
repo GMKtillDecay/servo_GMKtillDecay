@@ -24,9 +24,12 @@ CSG servoFactory(
 		double tipOfShaftToBottomOfFlange,
 		double flangeThickness,
 		double flangeLongDimention,
-		double bottomOfFlangeToTopOfBody
+		double bottomOfFlangeToTopOfBody,
+		HashMap<String,Object> servoConfig
 		){
+		
 		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",30,[500,0.01])
+		
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
 				outputShaftDimeter/2, // Radius at the bottom
 				tipOfShaftToBottomOfFlange, // Height
@@ -73,8 +76,38 @@ CSG servoFactory(
 			
 			.movey(shaftToShortSideDistance-3)
 			.movez(-tailLength.getMM())
-			
-          return shaft.union(flange,body,cord)
+		CSG builtServo = shaft.union(flange,body,cord)
+		if(servoConfig!=null){
+			if(servoConfig.get("numberOfHolesPerFlange")!=null){
+				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",60,[500,0.01])
+				double numberOfHolesPerFlange=Double.parseDouble(servoConfig.get("numberOfHolesPerFlange").toString())
+				double holeDiameter=Double.parseDouble(servoConfig.get("holeDiameter").toString())
+				double holeEdgetoHoleEdgeLongDistance=Double.parseDouble(servoConfig.get("holeEdgetoHoleEdgeLongDistance").toString())
+				double shaftToHoleSide = -((flangeLongDimention-holeEdgetoHoleEdgeLongDistance)/2)+shaftToShortSideFlandgeEdge
+				CSG bolt = new Cylinder(	holeDiameter/2, // Radius at the top
+										holeDiameter/2, // Radius at the bottom
+										boltLength.getMM()*2, // Height
+									         (int)36//resolution
+									         ).toCSG()
+									         .movez(-boltLength.getMM())
+				CSG bolts = bolt.toYMin()	
+							.union( bolt.toYMax().movey(-	holeEdgetoHoleEdgeLongDistance)		)	
+							.movey(shaftToHoleSide)	         
+				if(servoConfig.get("holeEdgetoHoleEdgeShortDistance")!=null){
+					double holeEdgetoHoleEdgeShortDistance=Double.parseDouble(servoConfig.get("holeEdgetoHoleEdgeShortDistance").toString())
+					bolts=bolts.toXMin()
+							.movex(holeEdgetoHoleEdgeShortDistance/2)
+							.union(bolts.toXMax()
+									.movex(-holeEdgetoHoleEdgeShortDistance/2))
+				}
+				//println "Adding bolts"
+				builtServo=builtServo
+					.union(bolts)
+          			.setParameter(boltLength)
+			}
+		}
+				
+          return builtServo
           	.setParameter(tailLength)
 }
 /*
@@ -100,6 +133,7 @@ CSG getNut(){
 	//println "Database loaded "+database
 	HashMap<String,Object> servoConfig = Vitamins.getConfiguration( type,size.getStrValue())
 
+	println "Loading " +size.getStrValue()
 	return servoFactory(Double.parseDouble(servoConfig.get("servoThinDimentionThickness").toString()),//servoThinDimentionThickness
 			Double.parseDouble(servoConfig.get("servoThickDimentionThickness").toString()),// servoThickDimentionThickness
 			Double.parseDouble(servoConfig.get("servoShaftSideHeight").toString()), // servoShaftSideHeight
@@ -109,16 +143,19 @@ CSG getNut(){
                Double.parseDouble(servoConfig.get("tipOfShaftToBottomOfFlange").toString()), // tipOfShaftToBottomOfFlange
                Double.parseDouble(servoConfig.get("flangeThickness").toString()),//flangeThickness
                Double.parseDouble(servoConfig.get("flangeLongDimention").toString()),// flangeLongDimention
-               Double.parseDouble(servoConfig.get("bottomOfFlangeToTopOfBody").toString())//bottomOfFlangeToTopOfBody
-                        )
+               Double.parseDouble(servoConfig.get("bottomOfFlangeToTopOfBody").toString()),//bottomOfFlangeToTopOfBody
+               servoConfig         )
 		.setParameter(size)
 		.setRegenerate({getNut()})
 }
 
-if(args==null)
-	args=["standardMicro"]
+if(args==null){
+	args=["hv6214mg"]
+	
+	Vitamins.setGitRepoDatabase("https://github.com/madhephaestus/Hardware-Dimensions.git")
+	CSGDatabase.clear()
+}
 if(args.size()==1 ){
-
     return getNut()                  
 	
 }
@@ -143,5 +180,6 @@ return servoFactory(args.get(0),//servoThinDimentionThickness
                         args.get(6), // tipOfShaftToBottomOfFlange
                         args.get(7) ,//flangeThickness
                         args.get(8),// flangeLongDimention
-                        args.get(9)//bottomOfFlangeToTopOfBody
+                        args.get(9),//bottomOfFlangeToTopOfBody
+                        null
           )     
