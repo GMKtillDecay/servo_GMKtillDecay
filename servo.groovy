@@ -79,31 +79,42 @@ CSG servoFactory(
 		CSG builtServo = shaft.union(flange,body,cord)
 		if(servoConfig!=null){
 			if(servoConfig.get("numberOfHolesPerFlange")!=null){
-				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",60,[500,0.01])
+				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",tipOfShaftToBottomOfFlange,[500,0.01])
 				double numberOfHolesPerFlange=Double.parseDouble(servoConfig.get("numberOfHolesPerFlange").toString())
 				double holeDiameter=Double.parseDouble(servoConfig.get("holeDiameter").toString())
 				double holeEdgetoHoleEdgeLongDistance=Double.parseDouble(servoConfig.get("holeEdgetoHoleEdgeLongDistance").toString())
+				boolean holesUp = servoConfig.get("holeOrentation").toString().contains("up")
+				boolean noBolts = servoConfig.get("holeOrentation").toString().contains("none") ||servoConfig.get("holeOrentation").toString().contains("null") 
 				double shaftToHoleSide = -((flangeLongDimention-holeEdgetoHoleEdgeLongDistance)/2)+shaftToShortSideFlandgeEdge
-				CSG bolt = new Cylinder(	holeDiameter/2, // Radius at the top
-										holeDiameter/2, // Radius at the bottom
-										boltLength.getMM()*2, // Height
-									         (int)36//resolution
-									         ).toCSG()
-									         .movez(-boltLength.getMM())
-				CSG bolts = bolt.toYMin()	
-							.union( bolt.toYMax().movey(-	holeEdgetoHoleEdgeLongDistance)		)	
+				StringParameter boltSizeParam = new StringParameter("Servo Bolt Size","M3",Vitamins.listVitaminSizes("capScrew"))
+				LengthParameter boltLengthDefault		= new LengthParameter("Bolt Length",10,[180,10])
+				boltLengthDefault.setMM(boltLength.getMM())
+				HashMap<String, Object>  boltData = Vitamins.getConfiguration( "capScrew",boltSizeParam.getStrValue())								
+				
+				CSG bolt =  Vitamins.get( "capScrew",boltSizeParam.getStrValue())
+									         
+				if(	holesUp){
+					bolt=bolt.rotx(180)				  
+				}else{
+					bolt=bolt.movez(flangeThickness)
+				}
+				CSG bolts = bolt.movey(holeDiameter/2)	
+							.union( bolt.movey(-holeDiameter/2)	.movey(-	holeEdgetoHoleEdgeLongDistance)		)	
 							.movey(shaftToHoleSide)	         
 				if(servoConfig.get("holeEdgetoHoleEdgeShortDistance")!=null){
 					double holeEdgetoHoleEdgeShortDistance=Double.parseDouble(servoConfig.get("holeEdgetoHoleEdgeShortDistance").toString())
-					bolts=bolts.toXMin()
+					bolts=bolts.movex(holeDiameter/2)	
 							.movex(holeEdgetoHoleEdgeShortDistance/2)
-							.union(bolts.toXMax()
+							.union(bolts.movex(-holeDiameter/2)	
 									.movex(-holeEdgetoHoleEdgeShortDistance/2))
 				}
-				//println "Adding bolts"
-				builtServo=builtServo
-					.union(bolts)
-          			.setParameter(boltLength)
+				if(!noBolts){
+					//println "Adding bolts"
+					builtServo=builtServo
+						.union(bolts)
+	          			.setParameter(boltLength)
+	          			.setParameter(boltSizeParam)
+				}
 			}
 		}
 				
