@@ -92,12 +92,18 @@ CSG servoFactory(
 				HashMap<String, Object>  boltData = Vitamins.getConfiguration( "capScrew",boltSizeParam.getStrValue())								
 				
 				CSG bolt =  Vitamins.get( "capScrew",boltSizeParam.getStrValue())
-									         
+				double capHeight = bolt.getMaxZ()	
+				int stepsOfBolt = 	tailLength.getMM()/	capHeight		         
 				if(	holesUp){
-					bolt=bolt.rotx(180)				  
+					bolt=bolt.rotx(180)	
+					capHeight=-capHeight		  
 				}else{
 					bolt=bolt.movez(flangeThickness)
 				}
+				for(int i=0;i<stepsOfBolt;i++){
+					bolt=bolt.union(bolt.movez(capHeight*i))
+				}
+				
 				CSG bolts = bolt.movey(holeDiameter/2)	
 							.union( bolt.movey(-holeDiameter/2)	.movey(-	holeEdgetoHoleEdgeLongDistance)		)	
 							.movey(shaftToHoleSide)	         
