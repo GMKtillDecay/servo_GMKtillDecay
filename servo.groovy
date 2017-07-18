@@ -93,7 +93,9 @@ CSG servoFactory(
 				
 				CSG bolt =  Vitamins.get( "capScrew",boltSizeParam.getStrValue())
 				double capHeight = bolt.getMaxZ()	
-				int stepsOfBolt = 	tailLength.getMM()/	capHeight		         
+				int stepsOfBolt = 	tailLength.getMM()/	capHeight	
+				println "Servo cable len = "+	tailLength.getMM()+" cap height = "+ capHeight   +" steps = "+stepsOfBolt
+				CSG boltAccum = bolt
 				if(	holesUp){
 					bolt=bolt.rotx(180)	
 					capHeight=-capHeight		  
@@ -101,9 +103,11 @@ CSG servoFactory(
 					bolt=bolt.movez(flangeThickness)
 				}
 				for(int i=0;i<stepsOfBolt;i++){
-					bolt=bolt.union(bolt.movez(capHeight*i))
+					double z = capHeight*i
+					println "Z move of bolt = "+z
+					boltAccum=boltAccum.union(bolt.movez(z))
 				}
-				
+				bolt=boltAccum
 				CSG bolts = bolt.movey(holeDiameter/2)	
 							.union( bolt.movey(-holeDiameter/2)	.movey(-	holeEdgetoHoleEdgeLongDistance)		)	
 							.movey(shaftToHoleSide)	         
