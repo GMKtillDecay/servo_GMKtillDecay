@@ -94,11 +94,11 @@ CSG servoFactory(
 				headHeight=Double.parseDouble(boltData.get("headHeight").toString())
 				outerDiameter=Double.parseDouble(boltData.get("outerDiameter").toString())
 				//CSG bolt =  Vitamins.get( "capScrew",boltSizeParam.getStrValue())
-				CSG head =new Cylinder(headDiameter/2+(printerOffset.getMM()/2),headDiameter/2+(printerOffset.getMM()/2),headHeight,(int)10).toCSG() // a one line Cylinder
+				CSG bolthead =new Cylinder(headDiameter/2+(printerOffset.getMM()/2),headDiameter/2+(printerOffset.getMM()/2),tailLength.getMM(),(int)10).toCSG() // a one line Cylinder
 							.toZMin()
-				CSG shaft =new Cylinder(outerDiameter/2-(printerOffset.getMM()/2),outerDiameter/2-(printerOffset.getMM()/2),boltLength.getMM(),(int)10).toCSG() // a one line Cylinder
+				CSG boltshaft =new Cylinder(outerDiameter/2-(printerOffset.getMM()/2),outerDiameter/2-(printerOffset.getMM()/2),boltLength.getMM(),(int)10).toCSG() // a one line Cylinder
 							.toZMax()
-				CSG bolt=head.union(shaft)			
+				CSG bolt=bolthead.union(boltshaft)			
 				double capHeight = headHeight
 				int stepsOfBolt = 	(tailLength.getMM()/	capHeight	)+1
 				//println "Servo cable len = "+	tailLength.getMM()+" cap height = "+ capHeight   +" steps = "+stepsOfBolt
@@ -109,12 +109,7 @@ CSG servoFactory(
 				}else{
 					bolt=bolt.movez(flangeThickness)
 				}
-				for(int i=0;i<stepsOfBolt;i++){
-					double z = capHeight*i
-					//println "Z move of bolt = "+z
-					boltAccum=boltAccum.union(bolt.movez(z))
-				}
-				bolt=boltAccum
+
 				CSG bolts = bolt.movey(holeDiameter/2)	
 							.union( bolt.movey(-holeDiameter/2)	.movey(-	holeEdgetoHoleEdgeLongDistance)		)	
 							.movey(shaftToHoleSide)	         
