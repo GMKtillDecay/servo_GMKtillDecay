@@ -29,7 +29,7 @@ CSG servoFactory(
 		){
 		shaftToShortSideDistance= servoThinDimentionThickness/2
 		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",30,[500,0.01])
-		
+		LengthParameter printerOffset 			= new LengthParameter("printerOffset",0.5,[1.2,0])
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
 				outputShaftDimeter/2, // Radius at the bottom
 				tipOfShaftToBottomOfFlange, // Height
@@ -90,9 +90,16 @@ CSG servoFactory(
 				LengthParameter boltLengthDefault		= new LengthParameter("Bolt Length",10,[180,10])
 				boltLengthDefault.setMM(boltLength.getMM())
 				HashMap<String, Object>  boltData = Vitamins.getConfiguration( "capScrew",boltSizeParam.getStrValue())								
-				
-				CSG bolt =  Vitamins.get( "capScrew",boltSizeParam.getStrValue())
-				double capHeight = bolt.getMaxZ()	
+				headDiameter=Double.parseDouble(boltData.get("headDiameter").toString())
+				headHeight=Double.parseDouble(boltData.get("headHeight").toString())
+				outerDiameter=Double.parseDouble(boltData.get("outerDiameter").toString())
+				//CSG bolt =  Vitamins.get( "capScrew",boltSizeParam.getStrValue())
+				CSG head =new Cylinder(headDiameter/2+(printerOffset.getMM()/2),headDiameter/2+(printerOffset.getMM()/2),headHeight,(int)10).toCSG() // a one line Cylinder
+							.toZMin()
+				CSG shaft =new Cylinder(outerDiameter/2-(printerOffset.getMM()/2),outerDiameter/2-(printerOffset.getMM()/2),boltLength.getMM(),(int)10).toCSG() // a one line Cylinder
+							.toZMax()
+				CSG bolt=head.union(shaft)			
+				double capHeight = headHeight
 				int stepsOfBolt = 	(tailLength.getMM()/	capHeight	)+1
 				//println "Servo cable len = "+	tailLength.getMM()+" cap height = "+ capHeight   +" steps = "+stepsOfBolt
 				CSG boltAccum = bolt
