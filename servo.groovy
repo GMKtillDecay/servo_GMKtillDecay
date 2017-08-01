@@ -86,7 +86,7 @@ CSG servoFactory(
 				boolean holesUp = servoConfig.get("holeOrentation").toString().contains("up")
 				boolean noBolts = servoConfig.get("holeOrentation").toString().contains("none") ||servoConfig.get("holeOrentation").toString().contains("null") 
 				double shaftToHoleSide = -((flangeLongDimention-holeEdgetoHoleEdgeLongDistance)/2)+shaftToShortSideFlandgeEdge
-				StringParameter boltSizeParam = new StringParameter("Servo Bolt Size","M3",Vitamins.listVitaminSizes("capScrew"))
+				StringParameter boltSizeParam = new StringParameter("Servo Bolt Size","M5",Vitamins.listVitaminSizes("capScrew"))
 				LengthParameter boltLengthDefault		= new LengthParameter("Bolt Length",10,[180,10])
 				boltLengthDefault.setMM(boltLength.getMM())
 				HashMap<String, Object>  boltData = Vitamins.getConfiguration( "capScrew",boltSizeParam.getStrValue())								
