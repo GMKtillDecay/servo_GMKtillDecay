@@ -30,6 +30,7 @@ CSG servoFactory(
 		shaftToShortSideDistance= servoThinDimentionThickness/2
 		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",30,[500,0.01])
 		LengthParameter printerOffset 			= new LengthParameter("printerOffset",0.5,[1.2,0])
+		
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
 				outputShaftDimeter/2, // Radius at the bottom
 				tipOfShaftToBottomOfFlange, // Height
@@ -52,7 +53,8 @@ CSG servoFactory(
 			.movey(flange.getMaxY())
 			.movex(servoThinDimentionThickness/2)
 			.movez(flangeThickness)
-		flange=flange.union(flangeBrace)
+		flange=flange
+		      .union(flangeBrace)
 			.movex(-servoThinDimentionThickness/2)
 		CSG body = new Cube(	
 			servoThinDimentionThickness,// X dimention
@@ -173,7 +175,7 @@ CSG getNut(){
 }
 
 if(args==null){
-	args=["hv6214mg"]
+	args=["hv5932mg"]
 	
 	Vitamins.setGitRepoDatabase("https://github.com/madhephaestus/Hardware-Dimensions.git")
 	CSGDatabase.clear()
