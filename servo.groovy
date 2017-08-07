@@ -20,7 +20,6 @@ CSG servoFactory(
 		double servoShaftSideHeight,
 		double outputShaftDimeter,
 		double shaftToShortSideDistance,
-		double shaftToShortSideFlandgeEdge,
 		double tipOfShaftToBottomOfFlange,
 		double flangeThickness,
 		double flangeLongDimention,
@@ -30,7 +29,8 @@ CSG servoFactory(
 		shaftToShortSideDistance= servoThinDimentionThickness/2
 		LengthParameter tailLength		= new LengthParameter("Cable Cut Out Length",30,[500,0.01])
 		LengthParameter printerOffset 			= new LengthParameter("printerOffset",0.5,[1.2,0])
-		
+		double totalFlangLen = (flangeLongDimention-servoThickDimentionThickness)/2
+		double shaftToShortSideFlandgeEdge = shaftToShortSideDistance+totalFlangLen
 		CSG shaft = new Cylinder(	outputShaftDimeter/2, // Radius at the top
 				outputShaftDimeter/2, // Radius at the bottom
 				tipOfShaftToBottomOfFlange, // Height
@@ -164,7 +164,6 @@ CSG getNut(){
 			Double.parseDouble(servoConfig.get("servoShaftSideHeight").toString()), // servoShaftSideHeight
 			Double.parseDouble(servoConfig.get("outputShaftDiameter").toString()),// outputShaftDiameter
                Double.parseDouble(servoConfig.get("shaftToShortSideDistance").toString()), //shaftToShortSideDistance
-               Double.parseDouble(servoConfig.get("shaftToShortSideFlandgeEdge").toString()),// shaftToShortSideFlandgeEdge
                Double.parseDouble(servoConfig.get("tipOfShaftToBottomOfFlange").toString()), // tipOfShaftToBottomOfFlange
                Double.parseDouble(servoConfig.get("flangeThickness").toString()),//flangeThickness
                Double.parseDouble(servoConfig.get("flangeLongDimention").toString()),// flangeLongDimention
@@ -201,7 +200,6 @@ return servoFactory(args.get(0),//servoThinDimentionThickness
 			args.get(2), // servoShaftSideHeight
 			args.get(3),// outputShaftDiameter
                        args.get(4), //shaftToShortSideDistance
-                       args.get(5),// shaftToShortSideFlandgeEdge
                         args.get(6), // tipOfShaftToBottomOfFlange
                         args.get(7) ,//flangeThickness
                         args.get(8),// flangeLongDimention
