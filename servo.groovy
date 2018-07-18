@@ -81,7 +81,8 @@ CSG servoFactory(
 		CSG builtServo = CSG.unionAll([flange,body,cord])
 		if(servoConfig!=null){
 			if(servoConfig.get("numberOfHolesPerFlange")!=null){
-				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",tipOfShaftToBottomOfFlange,[500,0.01])
+				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",bottomOfFlangeToTopOfBody,[500,0.01])
+				boltLength.setMM(bottomOfFlangeToTopOfBody)
 				double numberOfHolesPerFlange=Double.parseDouble(servoConfig.get("numberOfHolesPerFlange").toString())
 				double holeDiameter=Double.parseDouble(servoConfig.get("holeDiameter").toString())
 				double holeEdgetoHoleEdgeLongDistance=Double.parseDouble(servoConfig.get("holeEdgetoHoleEdgeLongDistance").toString())
