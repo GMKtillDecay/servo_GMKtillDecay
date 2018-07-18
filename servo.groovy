@@ -78,7 +78,7 @@ CSG servoFactory(
 			
 			.movey(shaftToShortSideDistance-3)
 			.movez(-tailLength.getMM())
-		CSG builtServo = shaft.union(flange,body,cord)
+		CSG builtServo = CSG.unionAll([flange,body,cord])
 		if(servoConfig!=null){
 			if(servoConfig.get("numberOfHolesPerFlange")!=null){
 				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",tipOfShaftToBottomOfFlange,[500,0.01])
