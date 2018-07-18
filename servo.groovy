@@ -132,7 +132,7 @@ CSG servoFactory(
 				}
 			}
 		}
-				
+			builtServo=	builtServo.movez(-flangeThickness)
           return builtServo
           	.setParameter(tailLength)
 }
