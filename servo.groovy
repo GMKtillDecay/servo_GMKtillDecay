@@ -13,6 +13,9 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import eu.mihosoft.vrl.v3d.CSG
+import eu.mihosoft.vrl.v3d.Cube
+import eu.mihosoft.vrl.v3d.Cylinder
 import eu.mihosoft.vrl.v3d.parametrics.*;
 CSG servoFactory(   
 		double servoThinDimentionThickness,
@@ -69,7 +72,7 @@ CSG servoFactory(
 	    	CSG cord = new Cube(
 			9,// x dimention	
 			6,// y dimention
-			tailLength.getMM()//  Z dimention
+			tailLength.getMM()>0?tailLength.getMM():1//  Z dimention
 			)
 			.noCenter()
 			.toCSG()
@@ -78,7 +81,10 @@ CSG servoFactory(
 			
 			.movey(shaftToShortSideDistance-3)
 			.movez(-tailLength.getMM())
-		CSG builtServo = CSG.unionAll([flange,body,cord])
+		CSG builtServo = CSG.unionAll([flange,body])
+		if(tailLength.getMM()>flangeThickness) {
+			builtServo=builtServo.union(cord)
+		}
 		if(servoConfig!=null){
 			if(servoConfig.get("numberOfHolesPerFlange")!=null){
 				LengthParameter boltLength		= new LengthParameter("Servo Bolt Length",bottomOfFlangeToTopOfBody,[500,0.01])
