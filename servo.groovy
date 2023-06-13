@@ -181,7 +181,7 @@ CSG getNut(){
 }
 
 if(args==null){
-	args=["hv5932mg"]
+	args=["mg92b"]
 	
 	Vitamins.setGitRepoDatabase("https://github.com/madhephaestus/Hardware-Dimensions.git")
 	CSGDatabase.clear()
