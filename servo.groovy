@@ -56,6 +56,7 @@ CSG servoFactory(
 			.movey(flange.getMaxY())
 			.movex(servoThinDimentionThickness/2)
 			.movez(flangeThickness)
+		if(servoConfig!=null&& servoConfig.get("noFLangeBrace")==null)
 		flange=flange
 		      .union(flangeBrace)
 			.movex(-servoThinDimentionThickness/2)
