@@ -137,6 +137,17 @@ CSG servoFactory(
 	          			.setParameter(boltSizeParam)
 				}
 			}
+			if(servoConfig.get("topLevelInsetZ")!=null) {
+				double z = servoConfig.get("topLevelInsetZ")
+				double y = servoConfig.get("topLevelInsetY")
+				double x = servoThinDimentionThickness
+				CSG cutout = new Cube(x,y,z).toCSG()\
+								.toZMax()
+								.movez(builtServo.getMaxZ())
+								.toYMin()
+								.movey(shaftToShortSideDistance-servoThickDimentionThickness)
+				builtServo=	builtServo.difference(cutout)
+			}
 		}
 			builtServo=	builtServo.movez(-flangeThickness)
           return builtServo
