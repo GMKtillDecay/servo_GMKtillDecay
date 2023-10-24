@@ -72,7 +72,7 @@ CSG servoFactory(
 			.movex(-servoThinDimentionThickness/2)
 			.movey(shaftToShortSideDistance-servoThickDimentionThickness)
 	CSG cord = new Cube(
-			9,// x dimention
+			12,// x dimention
 			6,// y dimention
 			tailLength.getMM()>0?tailLength.getMM():1//  Z dimention
 			)
